@@ -1,0 +1,19 @@
+{% extends "theory_generic.html" %}
+
+{% block content %}
+    <h1>Theory List</h1>
+
+    {% if theory_list %}
+    <ul>
+
+      {% for theory in theory_list %}
+      <li>
+        <a href="{{ theory.get_absolute_url }}">{{ theory.name }}</a>
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No theory found.</p>
+    {% endif %}       
+{% endblock %}

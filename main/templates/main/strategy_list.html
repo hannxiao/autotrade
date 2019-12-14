@@ -1,0 +1,19 @@
+{% extends "strategy_generic.html" %}
+
+{% block content %}
+    <h1>Strategy List</h1>
+
+    {% if strategy_list %}
+    <ul>
+
+      {% for strategy in strategy_list %}
+      <li>
+        <a href="{{ strategy.get_absolute_url }}">{{ strategy.name }}</a> 
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No strategy found.</p>
+    {% endif %}       
+{% endblock %}

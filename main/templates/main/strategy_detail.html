@@ -1,0 +1,18 @@
+{% extends "strategy_generic.html" %}
+
+{% block content %}
+  <h1>{{ strategy.name }}</h1>
+
+  <p><strong>Summary:</strong> {{ strategy.summary }}</p> 
+  <p><strong>Related Indicator:</strong> {% for ind in strategy.indicator.all %} {{ ind }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>  
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Instances</h4>
+
+    {% for instance in strategy.strategyinstance_set.all %}
+    <hr>
+    <p>{{ strategy.kwarg }}</p>
+    <p><strong>Id:</strong> {{instance.id}}</p>
+    {% endfor %}
+  </div>
+{% endblock %}

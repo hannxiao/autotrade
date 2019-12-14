@@ -1,0 +1,18 @@
+{% extends "indicator_generic.html" %}
+
+{% block content %}
+  <h1>{{ indicator.name }}</h1>
+
+  <p><strong>Summary:</strong> {{ indicator.summary }}</p> 
+  <p><strong>Related Indicator:</strong> {% for ind in indicator.related.all %} {{ ind }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>  
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Instances</h4>
+
+    {% for instance in indicator.indicatorinstance_set.all %}
+    <hr>
+    <p>{{ instance.kwarg }}</p>
+    <p><strong>Id:</strong> {{instance.id}}</p>
+    {% endfor %}
+  </div>
+{% endblock %}

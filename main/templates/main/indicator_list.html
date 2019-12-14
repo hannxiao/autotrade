@@ -1,0 +1,19 @@
+{% extends "indicator_generic.html" %}
+
+{% block content %}
+    <h1>Indicator List</h1>
+
+    {% if indicator_list %}
+    <ul>
+
+      {% for indicator in indicator_list %}
+      <li>
+        <a href="{{ indicator.get_absolute_url }}">{{ indicator.name }}</a> 
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No indicator found.</p>
+    {% endif %}       
+{% endblock %}

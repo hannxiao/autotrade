@@ -1,0 +1,566 @@
+{% extends "base_generic.html" %}
+{% block topnav %}
+  <div id="topnav">
+    <a href="{% url 'index' %}">Home</a>
+    <a href="{% url 'market' %}">Market</a>
+    <a class="active" href="{% url 'methods' %}">Methods</a>
+    <a href="{% url 'theories' %}">Theories</a>
+    <a href="{% url 'indicators' %}">Indicators</a>
+    <a href="{% url 'strategies' %}">Strategies</a>
+  </div>
+{% endblock %}
+
+{% block content %}
+<div id="lside">
+  <form>
+    {% csrf_token %}
+    {{ getDataForm.as_p }}
+    <div class="button">
+      <button type="button" id="submitGetData">Submit</button>
+    </div>
+  </form>
+  
+  <div class="para">
+    <p>Several reason of failing to get the figure:</p>
+    <ol>
+      <li>Wrong input of date. Correct format: YYYY-MM-DD</li>
+      <li>Missing data exists in period. set interval = 1day</li>
+      <li>Limited time range. When interval = 1 min, we could only get data 30 trading days ago. 
+      it's 730 for interval = 60min or 1h, 60 otherwise.</li>
+    </ol>
+  </div>
+
+</div>
+  
+<div id="main">
+</div>
+
+<div id="rside">
+
+  <ul class="tabs">
+    <li rel="indicatorPanel" class="active">indicators</li>
+    <li rel="strategyPanel">strategies</li>
+    <li rel="analysisPanel">analyses</li>
+  </ul>
+  
+  
+  <form id="indicatorPanel" class="panel active">
+      {% csrf_token %}
+      {{ selectIndicatorForm.as_p }}
+      <div class="button">
+        <button type="button" id="submitSelectIndicator">Select</button>
+      </div>
+  </form>
+  
+  <form id="strategyPanel" class="panel">
+      {% csrf_token %}
+      {{ selectStrategyForm.as_p }}
+      <div class="button">
+        <button type="button" id="submitSelectStrategy">Select</button>
+      </div>
+  </form>  
+  
+  <form id="analysisPanel" class="panel">
+      {% csrf_token %}
+      {{ selectAnalysisForm.as_p }}
+      <div class="button">
+        <button type="button" id="submitSelectAnalysis">Select</button>
+      </div>
+  </form> 
+  
+  <form id="argInput">
+  </form>
+  
+</div>
+
+  
+  
+  
+<script type="text/javascript">
+var myChart = echarts.init(document.getElementById('main'));
+var option, extraChartNames = new Set([]);
+
+
+function setFunc(rawData) {
+
+var dates = getDate(rawData);
+var volume = rawData["Volume"]; 
+var open = rawData["Open"];
+var close = rawData["Close"];
+var low = rawData["Low"];
+var high = rawData["High"];
+
+var data = [];
+for (var i = 0; i < rawData["Close"].length; i++){
+   data.push([open[i], close[i], low[i], high[i]]);
+};
+
+var symbol = $symbol.val().toUpperCase();
+
+option = {
+    backgroundColor: '#21202D',
+    legend: {
+        data: [symbol, 'MA5', 'MA10', 'MA20'],
+        inactiveColor: '#777',
+        top: 20,
+        left: 25,
+        textStyle: {
+            color: '#fff'
+        }
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            animation: false,
+            type: 'cross',            
+        },
+        position: function (pos, params, el, elRect, size) {
+          var obj = {top: 10};
+          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 22;
+          return obj;
+        }
+   //     position: {top: 22, right: 0}       // fixed tooltip 
+  
+    },
+        axisPointer: {
+            link: {xAxisIndex: 'all'}
+        },
+    xAxis: [{
+        type: 'category',
+        data: dates,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        axisPointer: {label: {show: false}}
+
+    }, {
+        type: 'category',
+        gridIndex: 1,
+        data: dates,
+        axisLine: { lineStyle: { color: '#8392A5' } },    
+        axisTick: {show: false},
+        splitLine: {show: false},
+        axisLabel: {show: false},
+    
+    }],
+    yAxis: [{
+        scale: true,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        splitLine: { show: false },
+        splitNumber: 8,
+        name: 'Price',
+    },{
+        scale: true,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        splitLine: { show: false },
+        splitNumber: 8,
+        name: 'Volume'
+    },{
+        scale: true,
+        gridIndex: 1,
+        splitNumber: 4,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        splitLine: {show: false}
+    },{
+        scale: true,
+        gridIndex: 1,
+        splitNumber: 4,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        splitLine: {show: false}
+    }],
+        grid: [
+            {
+                left: '10%',
+                right: '8%',
+                height: '50%',
+                bottom: '34%'
+            },
+            {
+                left: '10%',
+                right: '8%',
+                bottom: '11%',
+                height: '15%'
+            }
+        ],
+    dataZoom: [{
+        textStyle: {
+            color: '#8392A5'
+        },
+        xAxisIndex: [0, 1],
+        handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        handleSize: '80%',
+        start: Math.max(100*(1-150/data.length), 0),
+        handleStyle: {
+            color: '#fff',
+            shadowBlur: 3,
+            shadowColor: 'rgba(0, 0, 0, 0.6)',
+            shadowOffsetX: 2,
+            shadowOffsetY: 2
+        }
+    }, {
+        type: 'inside',
+        xAxisIndex: [0, 1]
+    }],
+    animation: false,
+    series: [
+        {
+            type: 'candlestick',
+            name: symbol,
+            data: data,
+            itemStyle: {
+                normal: {
+                    color: '#0CF49B',
+                    color0: '#FD1050',
+                    borderColor: '#0CF49B',
+                    borderColor0: '#FD1050'
+                }
+            }
+        },  
+        {
+            name: 'Volume',
+            type: 'bar',
+            yAxisIndex: 1,
+            data: volume,
+            itemStyle: {
+              opacity: 0.2,
+              color: '#6495ED'
+            }
+            }
+    ]
+};
+
+    myChart.setOption(option, true);
+}
+
+</script>
+    
+<script>
+  var $symbol = $('#id_symbol');    
+  var $start = $('#id_start'); 
+  var $end = $('#id_end'); 
+  var $interval = $('#id_interval');     
+  $('#submitGetData').on('click', function(){
+    var form = {
+      symbol: $symbol.val(),
+      start: $start.val(),
+      end: $end.val(),
+      interval: $interval.val(),   
+    };     
+    $.ajax({
+      type: 'POST',
+      url: 'get-data',
+      data: form,
+      success: function(data){
+        rawData = data;
+        setFunc(rawData);
+        $('#rside').css('display', 'block');
+      },
+      failure: function(data){
+        alert('Got an error');
+      }
+    });
+  });
+  
+  $('#rside .tabs li').on('click', function(){
+    var panelToShow = $(this).attr('rel');
+    $('#rside .tabs li.active').removeClass('active');
+    $(this).addClass('active');
+    
+    $('#rside .panel.active').slideUp(250, function(){
+      $(this).removeClass('active');
+      
+      $('#'+panelToShow).slideDown(250, function(){
+        $(this).addClass('active');
+      });
+    });    
+  });
+   
+  $('.panel button').on('click', function(){
+    var $inputToUse = $(this).closest('.panel').find('select');
+    var $Name = $inputToUse.val();
+    var $Type = $inputToUse.attr('name');
+    var form = {
+      name: $Name,
+      type: $Type, 
+    };
+    $.ajax({
+      type: 'POST',
+      url: 'get-method-arg',
+      data: form,
+      success: function(data){
+        var arg = data.arg;
+        
+        for (i=0, len=arg.length; i<len; i++){
+          $("<p></p>").attr('id', 'p_'+arg[i]).appendTo('#argInput');
+          $("<label><label>")
+            .attr('for', 'input_'+arg[i])
+            .text(arg[i]+':')
+            .css({'text-align': 'right', 'width': '120px', 'display': 'inline-block'})
+            .appendTo('#p_'+arg[i]);
+         
+          $("<input type='text' value='' />")
+            .attr('id', 'input_'+arg[i])
+            .attr('name', arg[i])
+            .css({'position': 'relative', 'left': '30px', 'width': '150px'})
+            .appendTo('#p_'+arg[i]);   
+        };
+        
+        $("<p></p>").attr('id', 'p_button')
+            .appendTo('#argInput')
+            .css({'position': 'relative', 'top': '15px'})
+        
+        $("<button type='button' id='submitArgs'>Submit</button>")
+            .css({'position': 'relative', 'left': '15px'})
+            .appendTo('#p_button');     
+        $("<button type='button' id='resetRside'>Reset</button>")
+            .appendTo('#p_button')    
+            .css({'position': 'absolute', 'left': '150px'});
+        
+        if (data.helpText) {
+          helpText = data.helpText
+          $("<div></div>").attr('id', 'helpText').appendTo('#argInput')
+              .css({'position': 'relative', 'top': '25px'})
+              
+          for (i=0; i<helpText.length; i++) {
+            $("<p></p>").appendTo('#helpText').text(helpText[i])     
+          }     
+        }
+        
+        $('#argInput').slideDown(250);
+        $('.panel.active button').hide();
+        
+        $inputToUse.attr('disabled', 'disabled');
+        $('#rside .tabs li').css('pointer-events', 'none');
+        $('#resetRside').on('click', resetRside);
+        $('#submitArgs').on('click', useMethod);
+      },
+      
+      failure: function(data){
+        alert('Got an error');
+      }
+    })
+  });
+  
+  $('#submitGetData').on('click', resetRside);
+
+  function resetRside(){
+    $('.panel.active p select').removeAttr('disabled');
+    $('#rside .tabs li').css('pointer-events', 'auto');
+    $('.panel.active button').show();
+    $('#argInput')
+      .hide()
+      .empty();
+  };
+  
+  function useMethod(){
+    var form = $.extend(true, {}, rawData);  //deep copying
+    // Although the whole rawData is sent, 'Adj Close' and 'Date' are hardly used. 'Close' is always used. 
+       
+    var $inputToUse = $('.panel.active p select');
+    var $Name = $inputToUse.val();
+    var $Type = $inputToUse.attr('name');  
+    form['name'] = $Name;
+    form['type'] = $Type;  
+    
+    $('#argInput p input').each(function(){
+      form[$(this).attr('name')] = $(this).val();
+    })
+        
+    $.ajax({
+      type: 'POST',
+      url: 'use-method',
+      data: JSON.stringify(form),
+      contentType: "application/json; charset=UTF-8",
+      
+      success: function(data){
+        test = data
+        delExtraChart()
+
+        for (key in data) {
+          option.series.push(addChart(data[key]));
+          option.legend.data.push(data[key].name);
+          extraChartNames.add(data[key].name); 
+        }
+        if ($Type === "strategy") {
+          // scale alignment
+          option.yAxis[2].max = function(value) {
+            return 10000 + 1.2 * Math.max(value.max-10000, 10000-value.min).toFixed(0)
+          };
+          option.yAxis[2].min = function(value) {
+            return 10000 - 1.2 * Math.max(value.max-10000, 10000-value.min).toFixed(0)
+          };
+          option.yAxis[3].max = function(value) {
+            return 1.2 * Math.max(value.max, -value.min).toFixed(1)
+          };
+          option.yAxis[3].min = function(value) {
+            return -1.2 * Math.max(value.max, -value.min).toFixed(1)
+          };
+          // set option series for strategy figures
+          var i = 0;
+          while (i < option.series.length){
+            if (extraChartNames.has(option.series[i].name)) {
+              if (option.series[i].type === "line") {
+                option.series[i].lineStyle = {
+                  normal: {
+                      width: 2,
+                      color: '#0080ff'
+                  }
+                };
+                option.series[i].showSymbol = false;              
+              };
+              if (option.series[i].type === "bar") {
+                option.series[i].itemStyle = {
+                  normal: {
+                      color: '#ff4d4d'
+                  }
+                };              
+              }; 
+              if (option.series[i].type === "scatter") {
+                option.series[i].symbolSize = 5;
+                option.series[i].label = {
+                  align: 'left',
+                  lineHeight: 20,
+                  emphasis: {
+                    show: true,
+                    formatter: 'event_type: {@[2]}\norder_type: {@[3]}\norder_price: {@[1]}\norder_amount: {@[4]}',
+                    position: [-70, 50]
+                  },
+                  backgroundColor: '#4d4d4d',
+                  padding: 10,
+                  borderColor: '#cccccc',
+                  borderWidth: 3
+                };
+                option.series[i].itemStyle = {
+                  normal: {
+                    color: function (param) {
+                      if (typeof param.data === "undefined") {
+                        return null
+                      } else if (param.data[3] === 'entry') {
+                        return '#00ffff';
+                      } else if (param.data[3] === 'exit') {
+                        return '#ffccff';
+                      } else if (param.data[3] === 'size') {
+                        return '#ffff00';
+                      }
+                    }
+                  }
+                };     
+              }
+            };
+            i++;                                     
+          }        
+        }        
+        myChart.setOption(option, true);  // the second arg 'true' means delete previous data set
+      },
+      failure: function(data){
+        alert('Got an error');
+      },
+    })
+  
+  }
+
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+
+  function addChart(settingDic){
+    var output = $.extend(true, {}, settingDic)
+    delete output.position
+    
+    if (settingDic.position === 'bottom1') {
+      Object.assign(output,{
+        xAxisIndex: 1,
+        yAxisIndex: 2
+        }
+      )
+    } else if (settingDic.position === 'bottom2') {
+      Object.assign(output,{
+        xAxisIndex: 1,
+        yAxisIndex: 3
+        }
+      )     
+    }
+    
+    return output
+  }
+  
+  function delExtraChart(){
+    var i = 0;
+    while (i < option.series.length){
+      if (extraChartNames.has(option.series[i].name)) {
+        option.series.splice(i, 1);
+      } else {
+        i++;
+      }
+    };
+    extraChartNames = new Set([]);
+    
+    delete option.yAxis[2].max
+    delete option.yAxis[2].min
+    delete option.yAxis[3].max
+    delete option.yAxis[3].min
+
+  }
+  
+  // this function should vary from data source
+  function getDate(rawData) {
+    var datename;
+    if (typeof rawData.Date != "undefined") {
+      datename = "Date";
+    } else if (typeof rawData.Datetime != "undefined"){
+      datename = "Datetime";
+    } else {
+      datename = "index";
+    }
+    
+    var dateIntervals = new Set(['1d', '1wk', '1mo', '3mo']);
+    if (dateIntervals.has($interval.val())) {
+      function simplifyDate(str){
+        return str.slice(0, 10);
+      }
+    } else {
+      function simplifyDate(str){
+        return str.slice(0, 10) + str.slice(11, 19); 
+      }    
+    }
+    
+    for (i=0, len=rawData[datename].length; i<len; i++) {
+      rawData[datename][i] = simplifyDate(rawData[datename][i]);
+    }
+    return rawData[datename]
+  }
+</script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+{% endblock %}

@@ -1,0 +1,153 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+margin: 0
+}
+
+#topnav{
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+#topnav a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+#topnav a:hover:not(.active) {
+  background-color: #111;
+}
+
+#topnav a.active {
+  background-color: #4CAF50;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.sticky + .content {
+  padding-top: 60px;
+}
+
+.content {
+  position: absolute;
+  width: 100%;
+  height: 93%;
+  z-index: -2;
+}
+
+#lside {
+position: absolute;
+        left: 0;
+        top: 0;
+        right: 1175px;
+        bottom: 0;
+        z-index: -1;  
+}
+
+#lside form {
+font-size: 14px
+}
+
+#lside form label {
+  display: inline-block;
+  width: 50px;
+  text-align: right;
+}
+
+#lside form input, #lside form textarea {
+  font: 1em sans-serif;
+  width: 80px;
+}
+
+#lside form .button {
+  padding-left: 50px;
+}
+
+#lside div.para {
+  width: 325px;
+}
+
+#main {   
+        position: absolute;
+        top: 0;
+        right: 500px;
+        bottom: 0;
+        left: 350px;
+        z-index: -1;
+}  
+
+#rside {
+        display: none;
+        margin: 20px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 1050px;
+        z-index: -1;
+}  
+
+#rside .tabs li {
+  list-style-type:none;
+  display: inline-block;
+  background: #999;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 10px 10px 0 0;
+  color: #000;
+  font-weight: 200;
+  cursor: pointer;
+}
+
+#rside .tabs {
+  margin: 0;
+  padding: 0;
+}
+
+
+#rside .tabs li:hover {
+  color: #fff;
+  background: #666;
+}
+
+#rside .tabs li.active {
+  color: #fff;
+  background: #666;
+}
+
+#rside .panel {
+  display: none;
+  background: #c9c9c9;
+  padding: 30px ;
+  border-radius: 0 0 10px 10px;
+}
+
+#rside .panel.active {
+  display: block;
+}
+
+#rside #argInput {
+  display: none;
+  background: #c9c9c9;
+  padding: 30px ;
+  border-radius: 0 0 10px 10px;
+}
+
+
+
+
+
+
