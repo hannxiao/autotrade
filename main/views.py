@@ -1,6 +1,6 @@
 from .models import Theory, Indicator, Strategy
 from django.views import generic
-from methods import functions, indicators, strategies, analysis, toolFuncs 
+from .methods import functions, indicators, strategies, analysis, toolFuncs 
 
 from django.http import JsonResponse
 import inspect
