@@ -1,8 +1,7 @@
 import yfinance as yf
-import matplotlib.pyplot as plt
-from datetime import date
-import pandas_datareader.data as pdr
 import numpy as np
+
+# import pandas_datareader.data as pdr
 
 
 # how data is fetched in functions

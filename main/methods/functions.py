@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import yfinance as yf
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -7,8 +7,6 @@ import datetime
 import pandas as pd
 import numpy as np
 from mpl_finance import candlestick_ohlc
-from collections import deque 
-import scipy.stats as ss
 
 from . import indicators, strategies 
 

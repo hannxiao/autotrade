@@ -1,6 +1,5 @@
 from . import indicators, toolFuncs
-import pandas as pd
-import numpy as np
+
 
 
 def Strategy_AIP(data, K):
