@@ -22,17 +22,17 @@ class GetDataForm(forms.Form):
     interval = forms.ChoiceField(choices=INTERVALS, initial='1d', help_text='Select an interval')  
 
 class SelectIndicatorForm(forms.Form):
-    from methods import indicators 
+    from .methods import indicators 
     INDICATORS = [(ele[0], ele[0]) for ele in inspect.getmembers(indicators, inspect.isfunction)]
     indicator = forms.ChoiceField(choices=INDICATORS, help_text='Select an indicator')  
     
 class SelectStrategyForm(forms.Form):
-    from methods import strategies 
+    from .methods import strategies 
     STRATEGIES = [(ele[0], ele[0]) for ele in inspect.getmembers(strategies, inspect.isfunction)]
     strategy = forms.ChoiceField(choices=STRATEGIES, help_text='Select a strategy')      
     
 class SelectAnalysisForm(forms.Form):
-    from methods import analysis 
+    from .methods import analysis 
     ANALYSIS = [(ele[0], ele[0]) for ele in inspect.getmembers(analysis, inspect.isfunction)]
     analysis = forms.ChoiceField(choices=ANALYSIS, help_text='Select an analysis')   
     
