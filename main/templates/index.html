@@ -1,26 +1,21 @@
 {% extends "base_generic.html" %}
 
 {% block topnav %}
-  <div id="topnav">
-
     <a class="active" href="{% url 'index' %}">Home</a>
     <a href="{% url 'develop' %}">Develop</a>
     <a href="{% url 'methods' %}">Methods</a>
     <a href="{% url 'theories' %}">Theories</a>
     <a href="{% url 'indicators' %}">Indicators</a>
-    <a href="{% url 'strategies' %}">Strategies</a> 
-  </div>
-    
+    <a href="{% url 'strategies' %}">Strategies</a>   
 {% endblock %}
+
 {% block content %}
 <h1>Project: Stock Market Analysis</h1>
 
   <p>Welcome, this website is developed by <em>Xiao Han</em>.</p>
-  <p>Hopefully it will show you different indicators, strategies and analyses,
-   which are allowed to be applied on customized stock and time period.</p>
-  <p>Strategy development webpage developing...</p> 
+  <p>Hopefully it will show you various indicators, strategies and analyses,
+   which are allowed to be applied on customized stock type and time period.</p>
+  <p>Developing strategy development webpage ...</p> 
 
 
-
-   
 {% endblock %}

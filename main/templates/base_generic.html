@@ -15,9 +15,11 @@
 </head>
 
 <body>
-  {% block topnav %}{% endblock %}
-
-  <div class="content">
+  <div id="topnav">
+    {% block topnav %}{% endblock %}
+  </div>
+  
+  <div id="content">
     {% block content %}{% endblock %}
   </div>
   

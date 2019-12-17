@@ -2,7 +2,7 @@ from django import forms
 import inspect
 
 class GetDataForm(forms.Form):
-    symbol = forms.CharField(help_text="Enter a valid symbol of company", initial='goog')
+    symbol = forms.CharField(help_text="Enter a valid stock symbol", initial='goog')
     start = forms.DateField(help_text="Enter a start date", initial='2011-09-01')
     end = forms.DateField(help_text="Enter an end date", initial='2012-09-09')
     
