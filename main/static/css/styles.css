@@ -2,6 +2,8 @@
   box-sizing: border-box;
 }
 
+/* For base_generic.html:*/
+
 body {
 margin: 0
 }
@@ -43,13 +45,22 @@ margin: 0
 
 #content {
   position: absolute;
-  width: 97%;
+  width: 100%;
   height: 93%;
   z-index: -2;
-  margin-left: 10px;
 }
 
-#lside {
+/* For methods.html: */
+
+.methods {
+  position: absolute;
+  width: 97%;
+  height: 100%;
+  margin-left: 10px;
+  z-index: -2;
+}
+
+.methods #lside {
 position: absolute;
         left: 0;
         top: 0;
@@ -58,30 +69,30 @@ position: absolute;
         z-index: -1;  
 }
 
-#lside form {
+.methods #lside form {
 font-size: 14px
 }
 
-#lside form label {
+.methods #lside form label {
   display: inline-block;
   width: 50px;
   text-align: right;
 }
 
-#lside form input, #lside form textarea {
+.methods #lside form input, .methods #lside form textarea {
   font: 1em sans-serif;
   width: 80px;
 }
 
-#lside form .button {
+.methods #lside form .button {
   padding-left: 50px;
 }
 
-#lside div.para {
+.methods #lside div.para {
   width: 325px;
 }
 
-#main {   
+.methods #main {   
         position: absolute;
         top: 0;
         right: 450px;
@@ -90,7 +101,7 @@ font-size: 14px
         z-index: -1;
 }  
 
-#rside {
+.methods #rside {
         display: none;
         margin: 20px;
         position: absolute;
@@ -101,8 +112,8 @@ font-size: 14px
         z-index: -1;
 }  
 
-#rside .tabs li {
-  list-style-type:none;
+.methods #rside .tabs li {
+  list-style-type: none;
   display: inline-block;
   background: #999;
   margin: 0;
@@ -113,23 +124,23 @@ font-size: 14px
   cursor: pointer;
 }
 
-#rside .tabs {
+.methods #rside .tabs {
   margin: 0;
   padding: 0;
 }
 
 
-#rside .tabs li:hover {
+.methods #rside .tabs li:hover {
   color: #fff;
   background: #666;
 }
 
-#rside .tabs li.active {
+.methods #rside .tabs li.active {
   color: #fff;
   background: #666;
 }
 
-#rside .panel {
+.methods #rside .panel {
   display: none;
   background: #c9c9c9;
   padding: 30px ;
@@ -138,11 +149,11 @@ font-size: 14px
   border-width: 1px;
 }
 
-#rside .panel.active {
+.methods #rside .panel.active {
   display: block;
 }
 
-#rside #argInput {
+.methods #rside #argInput {
   display: none;
   background: #c9c9c9;
   padding: 30px ;
@@ -150,6 +161,58 @@ font-size: 14px
   border-style: solid;
   border-width: 1px;
 }
+
+/* For develop.html:*/
+.develop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+.develop .tab {
+  float: left;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 20%;
+  height: 100%;
+}
+
+.develop .tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 16px;
+  width: 100%;
+  border: none;
+  outline: 1px solid #ccc;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.develop .tab button:hover {
+  background-color: #ddd;
+}
+
+.develop .tab button.active {
+  background-color: #ccc;
+}
+
+.develop .tabcontent {
+  float: left;
+  padding-left: 15px;
+  border: none;
+  width: 80%;
+  height: 100%;
+  display: none;
+}
+
+.develop .tabcontent.active {
+  display: block;
+}
+
+
+
 
 
 

@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="methods">
 <div id="lside">
   <form>
     {% csrf_token %}
@@ -70,7 +71,7 @@
   </form>
   
 </div>
-
+</div>
   
   
   
@@ -150,6 +151,9 @@ option = {
         axisLine: { lineStyle: { color: '#8392A5' } },
         splitLine: { show: false },
         splitNumber: 8,
+        axisLabel: {formatter: function (value, index){
+                     return value.toExponential(1)
+                   }},
         name: 'Volume'
     },{
         scale: true,

@@ -10,9 +10,43 @@
 {% endblock %}
 
 {% block content %}
+<div class="develop">
+<div class="tab">
+  <button rel="stocks" class="tablink active">Stocks</button>
+  <button rel="strategy" class="tablink">DevelopStrategy</button>
+  <button rel="analysis" class="tablink">Analyses</button>
+</div>
+  
+<div id="stocks" class="tabcontent active">
+ <p>stocks</p>
+</div>
+
+<div id="strategy" class="tabcontent">
+ <p>strategy</p>
+
+</div>
+
+<div id="analysis" class="tabcontent">
+ <p>analysis</p>
+
+</div>
 
 
 
+</div>
+
+<script type="text/javascript">
+$('.tablink').on('click', function() {
+  var contentToShow = $(this).attr('rel');
+  $('.tablink.active').removeClass('active');
+  $(this).addClass('active');
+  
+  $('.tabcontent.active').removeClass('active');
+  $('#'+ contentToShow).addClass('active');
+
+})
+
+</script>
 
    
 {% endblock %}

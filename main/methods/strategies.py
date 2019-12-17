@@ -29,7 +29,7 @@ from . import indicators, toolFuncs
 def Strategy_AIP(data, K):
     '''
     Automatic Investment Plan
-    Invest a certain amount of money every K period
+    Invest a certain amount of money every K units of time
     About 10000 cash(initial number) will be invested at the end
     '''
     l = len(data['Close'])
