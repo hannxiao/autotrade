@@ -1,32 +1,34 @@
 from . import indicators, toolFuncs
 
 
+# =============================================================================
+# Previous way to construct strategy
+# def Strategy_AIP(data, K):
+#     # automatic investment plan
+#     l = len(data['Close'])
+#     trade_signal = []
+#     single = 10000/(l//K+(l%K>0))
+#     
+#     n = 1
+#     for i in range(l):
+#         if i % K == 0:
+#             trade_signal.append((single, 'value','vary'))
+#             n += 1
+#         else:
+#             trade_signal.append(None)   
+#     
+#     stock_shares, asset = toolFuncs.backtest(data, trade_signal)
+#     output = {}    
+#     output['asset'] = {'name': 'return', 'data': asset, 'position': 'bottom1',
+#           'type': 'line'}
+#     #toolFuncs.MaximumDrawdown(asset)   
+#     output['stock_shares'] = {'name': 'position', 'data': stock_shares, 'position': 'bottom2', 'type': 'bar'}
+#     return output
+# =============================================================================
 
 def Strategy_AIP(data, K):
-    # automatic investment plan
-    l = len(data['Close'])
-    trade_signal = []
-    single = 10000/(l//K+(l%K>0))
-    
-    n = 1
-    for i in range(l):
-        if i % K == 0:
-            trade_signal.append((single, 'value','vary'))
-            n += 1
-        else:
-            trade_signal.append(None)   
-    
-    stock_shares, asset = toolFuncs.backtest(data, trade_signal)
-    output = {}    
-    output['asset'] = {'name': 'return', 'data': asset, 'position': 'bottom1',
-          'type': 'line'}
-    #toolFuncs.MaximumDrawdown(asset)   
-    output['stock_shares'] = {'name': 'position', 'data': stock_shares, 'position': 'bottom2', 'type': 'bar'}
-    return output
-
-def Strategy_AIP2(data, K):
     '''
-    automatic investment plan
+    Automatic Investment Plan
     Invest a certain amount of money every K period
     About 10000 cash(initial number) will be invested at the end
     '''
