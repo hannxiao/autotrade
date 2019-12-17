@@ -32,10 +32,10 @@ class StrategyListView(generic.ListView):
 class StrategyDetailView(generic.DetailView):
     model = Strategy
     
-def Market(request):
+def Develop(request):
     return render(
         request,
-        'index.html',
+        'develop.html',
     )
 
 from .forms import *
