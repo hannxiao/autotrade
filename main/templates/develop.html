@@ -2,8 +2,8 @@
 
 {% block topnav %}  
     <a href="{% url 'index' %}">Home</a>
+    <a href="{% url 'methods' %}">Methods</a>    
     <a class="active" href="{% url 'develop' %}">Develop</a>
-    <a href="{% url 'methods' %}">Methods</a>
     <a href="{% url 'theories' %}">Theories</a>
     <a href="{% url 'indicators' %}">Indicators</a>
     <a href="{% url 'strategies' %}">Strategies</a>     
@@ -18,7 +18,54 @@
 </div>
   
 <div id="stocks" class="tabcontent active">
- <p>stocks</p>
+  <form>
+    {% csrf_token %}
+    {{ developInitialForm }}
+    <br>
+    <div class="symbolInput">
+      <label>Add a symbol:</label>
+      <input type="text" value="goog">
+      <button type="button">Add</button>
+    </div>  
+  </form>
+  <div id="tablecontainer">
+    <table>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+      <tr>
+        <th>Symbol</th>
+      </tr>
+    </table>
+  </div>
 </div>
 
 <div id="strategy" class="tabcontent">

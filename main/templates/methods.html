@@ -1,8 +1,8 @@
 {% extends "base_generic.html" %}
 {% block topnav %}
     <a href="{% url 'index' %}">Home</a>
-    <a href="{% url 'develop' %}">Develop</a>
     <a class="active" href="{% url 'methods' %}">Methods</a>
+    <a href="{% url 'develop' %}">Develop</a>    
     <a href="{% url 'theories' %}">Theories</a>
     <a href="{% url 'indicators' %}">Indicators</a>
     <a href="{% url 'strategies' %}">Strategies</a>
@@ -22,10 +22,10 @@
   <div class="para">
     <p>Several reason of failing to get the figure:</p>
     <ol>
-      <li>Wrong input of date. Correct format: YYYY-MM-DD</li>
-      <li>Missing data exists in period. set interval = 1day</li>
-      <li>Limited time range. When interval = 1 min, we could only get data 30 trading days ago. 
-      it's 730 for interval = 60min or 1h, 60 otherwise.</li>
+      <li>Wrong input format of date. Correct format: YYYY-MM-DD.</li>
+      <li>Part of data missed. Try setting interval = 1 day.</li>
+      <li>Limited time range. When interval = 1 min, we could only get data of 30 preceding units of time. 
+      It's 730 for interval = 60 min or 1 h, and 60 otherwise.</li>
     </ol>
   </div>
 

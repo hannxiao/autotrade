@@ -7,6 +7,8 @@ import inspect
 from django.shortcuts import render
 import json
 
+from .forms import *
+
 def index(request):
     return render(
         request,
@@ -33,12 +35,13 @@ class StrategyDetailView(generic.DetailView):
     model = Strategy
     
 def Develop(request):
+    developInitialForm = DevelopInitialForm()
     return render(
         request,
         'develop.html',
+        {'developInitialForm': developInitialForm}
     )
 
-from .forms import *
 def Method(request):
     getDataForm = GetDataForm()
     selectIndicatorForm = SelectIndicatorForm()

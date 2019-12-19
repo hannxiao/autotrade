@@ -36,7 +36,23 @@ class SelectAnalysisForm(forms.Form):
     ANALYSIS = [(ele[0], ele[0]) for ele in inspect.getmembers(analysis, inspect.isfunction)]
     analysis = forms.ChoiceField(choices=ANALYSIS, help_text='Select an analysis')   
     
-    
+class DevelopInitialForm(forms.Form):
+    start = forms.DateField(initial='2011-09-01')
+    end = forms.DateField(initial='2012-09-09')
+    INTERVALS = (
+        ('1m', '1 minutes'),
+        ('2m', '2 minutes'),
+        ('5m', '5 minutes'),
+        ('15m', '15 minutes'),
+        ('30m', '30 minutes'),
+        ('60m', '60 minutes'),
+        ('90m', '90 minutes'),
+        ('1d', '1 day'),
+        ('1wk', '1 week'),
+        ('1mo', '1 month'),
+        ('3mo', '3 months'),
+    )
+    interval = forms.ChoiceField(choices=INTERVALS, initial='1d')      
     
     
     
