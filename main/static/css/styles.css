@@ -217,15 +217,15 @@ font-size: 14px
   padding: 20px 30px 0 30px;
 }
 
-.develop #stocks form label {
+.develop #symbolInput label {
   padding-left: 50px;
 }
 
-.develop #stocks form div {
+.develop #symbolInput {
   padding-top: 20px;
 }
 
-.develop #stocks form div input {
+.develop #symbolInput input {
   margin-right: 40px;
 }
 
@@ -238,18 +238,18 @@ font-size: 14px
   border: 2px solid #000;
 }
 
-.develop #stocks table {
+.develop #tablecontainer table {
   width: 100%;
 
 
 }
 
-.develop #stocks th, .develop #stocks td {
+.develop #tablecontainer th, .develop #tablecontainer td {
   text-align: left;
   padding: 16px;
 }
 
-.develop #stocks tr:nth-child(even) {
+.develop #tablecontainer tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 

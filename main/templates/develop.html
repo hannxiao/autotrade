@@ -22,48 +22,18 @@
     {% csrf_token %}
     {{ developInitialForm }}
     <br>
-    <div class="symbolInput">
+    <div id="symbolInput">
       <label>Add a symbol:</label>
       <input type="text" value="goog">
       <button type="button">Add</button>
-    </div>  
+    </div>
   </form>
   <div id="tablecontainer">
     <table>
       <tr>
         <th>Symbol</th>
       </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
-      <tr>
-        <th>Symbol</th>
-      </tr>
+      
     </table>
   </div>
 </div>
@@ -81,6 +51,74 @@
 
 
 </div>
+<script type="text/javascript">
+var $start = $('#id_start');
+var $end = $('#id_end');
+var $interval = $('#id_interval');
+var $symbol = $('#symbolInput input');
+
+var stockSet = new Set([]);
+var stockData = {};
+
+  $('#symbolInput button').on('click', function() {
+    if (stockSet.has($symbol.val())) {
+      alert('That stock has already been collected.');
+    } else {
+      var form = {
+        symbol: $symbol.val(),
+        start: $start.val(),
+        end: $end.val(),
+        interval: $interval.val(),
+      };     
+      $.ajax({
+        type: 'POST',
+        url: 'get-data',
+        data: form,
+        success: function(data){
+          if (data.Close.length > 0) {
+            stockData[$symbol.val()] = data;            
+            stockSet.add($symbol.val());
+            $("<td></td>")
+              .text($symbol.val())
+              .appendTo(
+                $("<tr></tr>").appendTo('#tablecontainer table')
+              );
+          } else {
+            alert('Suitable data not found. Please ensure the inputs are correct.');
+          }
+        },
+        failure: function(data){
+          alert('Got an error');
+        }
+      })
+    }
+  })
+
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+
+</script>
 
 <script type="text/javascript">
 $('.tablink').on('click', function() {

@@ -9,9 +9,11 @@ urlpatterns = [
     path('indicators/<int:pk>', views.IndicatorDetailView.as_view(), name='indicator-detail'),
     path('strategies/', views.StrategyListView.as_view(), name='strategies'),
     path('strategies/<int:pk>', views.StrategyDetailView.as_view(), name='strategy-detail'),
-    path('develop/', views.Develop, name='develop'),
     path('methods/', views.Method, name='methods'),
     path('methods/get-data', views.GetData, name='get-data'),
     path('methods/get-method-arg', views.GetMethodArg, name='get-method-arg'),
-    path('methods/use-method', views.UseMethod, name='use-method')
+    path('methods/use-method', views.UseMethod, name='use-method'),
+    path('develop/', views.Develop, name='develop'),
+    path('develop/get-data', views.GetData, name='get-data')
+
 ]
