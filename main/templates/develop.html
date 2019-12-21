@@ -30,12 +30,20 @@
   </form>
   <div id="tablecontainer">
     <table>
-      <tr>
+      <tr class="headrow">
         <th>Symbol</th>
         <th>Delete</th>        
       </tr>
-      
     </table>
+  </div>
+  <br>
+  <div id="botButtons">
+    <button type="button" id="id_save">Save</button>
+    <button type="button" id="id_toggle">Toggle</button>
+    <button type="button" id="id_clear">Clear</button>
+    <select>Form</select>
+  
+  
   </div>
 </div>
 
@@ -64,6 +72,8 @@ var stockData = {};
 $('#symbolInput button').on('click', function() {
   if (stockSet.has($symbol.val())) {
     alert('That stock has already been collected.');
+  } else if ($symbol.val() === '') {
+    alert('Error: Empty String Input');
   } else {
     var form = {
       symbol: $symbol.val(),
@@ -114,7 +124,14 @@ function DeleteTr() {
   $tr.remove();
 }
 
+$('#id_clear').on('click', function() {
+  $('#tablecontainer table tr:not(:first-child)').each(function() {
+    $(this).remove();
+  })
+  stockData = {};
+  stockSet = new Set([]);
 
+})
 
 
 
