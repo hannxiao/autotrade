@@ -32,6 +32,7 @@
     <table>
       <tr>
         <th>Symbol</th>
+        <th>Delete</th>        
       </tr>
       
     </table>
@@ -60,39 +61,66 @@ var $symbol = $('#symbolInput input');
 var stockSet = new Set([]);
 var stockData = {};
 
-  $('#symbolInput button').on('click', function() {
-    if (stockSet.has($symbol.val())) {
-      alert('That stock has already been collected.');
-    } else {
-      var form = {
-        symbol: $symbol.val(),
-        start: $start.val(),
-        end: $end.val(),
-        interval: $interval.val(),
-      };     
-      $.ajax({
-        type: 'POST',
-        url: 'get-data',
-        data: form,
-        success: function(data){
-          if (data.Close.length > 0) {
-            stockData[$symbol.val()] = data;            
-            stockSet.add($symbol.val());
-            $("<td></td>")
-              .text($symbol.val())
-              .appendTo(
-                $("<tr></tr>").appendTo('#tablecontainer table')
-              );
-          } else {
+$('#symbolInput button').on('click', function() {
+  if (stockSet.has($symbol.val())) {
+    alert('That stock has already been collected.');
+  } else {
+    var form = {
+      symbol: $symbol.val(),
+      start: $start.val(),
+      end: $end.val(),
+      interval: $interval.val(),
+    };     
+    $.ajax({
+      type: 'POST',
+      url: 'get-data',
+      data: form,
+      success: function(data){
+        if (data.Close.length > 0) {
+          stockData[$symbol.val()] = data;            
+          stockSet.add($symbol.val());  
+          $('#tablecontainer table').append(
+            $("<tr></tr>").append(
+                            $("<td></td>")
+                              .text($symbol.val())
+                              .addClass("symbolText")
+                           )
+                          .append(
+                            $("<td></td>").append(
+                              $("<button></button>")
+                                .text("delete")
+                                .on('click', DeleteTr)
+                            )
+                          )
+          );
+        } else {
             alert('Suitable data not found. Please ensure the inputs are correct.');
-          }
-        },
-        failure: function(data){
-          alert('Got an error');
         }
-      })
-    }
-  })
+      $symbol.val('');
+      $symbol.focus();
+      },
+      failure: function(data){
+        alert('Got an error');
+      }
+    } )
+  }
+})
+
+function DeleteTr() {
+  var $tr = $(this).closest('tr');
+  var symbolText = $tr.find(".symbolText").text();
+  delete stockData[symbolText];
+  stockSet.delete(symbolText);
+  $tr.remove();
+}
+
+
+
+
+
+
+
+
 
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
