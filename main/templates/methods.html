@@ -79,10 +79,19 @@
 var myChart = echarts.init(document.getElementById('main'));
 var option, extraChartNames = new Set([]);
 
-
+var test;
 function setFunc(rawData) {
 
 var dates = getDate(rawData);
+
+if (typeof rawData.Date === "undefined") {
+  rawData.Date = dates;
+  delete rawData.Datetime;
+  delete rawData.index;
+  test = true;
+}
+
+
 var volume = rawData["Volume"]; 
 var open = rawData["Open"];
 var close = rawData["Close"];
@@ -544,9 +553,7 @@ $.ajaxSetup({
       }    
     }
     
-    for (i=0, len=rawData[datename].length; i<len; i++) {
-      rawData[datename][i] = simplifyDate(rawData[datename][i]);
-    }
+    rawData[datename] = rawData[datename].map(simplifyDate);
     return rawData[datename]
   }
 </script>
