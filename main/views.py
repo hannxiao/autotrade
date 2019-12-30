@@ -15,7 +15,6 @@ def index(request):
         'index.html',
     )
     
-    
 class TheoryListView(generic.ListView):
     model = Theory
     
@@ -36,10 +35,13 @@ class StrategyDetailView(generic.DetailView):
     
 def Develop(request):
     developInitialForm = DevelopInitialForm()
+    selectStrategyForm = SelectStrategyForm()
     return render(
         request,
         'develop.html',
-        {'developInitialForm': developInitialForm}
+        {'developInitialForm': developInitialForm,
+         'selectStrategyForm': selectStrategyForm, 
+                 }
     )
 
 def Method(request):
@@ -125,10 +127,40 @@ def UseMethod(request):
             output = ind[1](**kwargs)
             return JsonResponse(output)
     
+def AnalyzeStrategy(request):
+    requestDic = json.loads(request.body)
+    Name = requestDic.get('name', None)    
     
+    data = {}
+    data['Open'] = requestDic.get('Open', None) 
+    data['Close'] = requestDic.get('Close', None)  
+    data['High'] = requestDic.get('High', None)  
+    data['Low'] = requestDic.get('Low', None)  
+    data['Volume'] = requestDic.get('Volume', None)  
+    data['Date'] = requestDic.get('Date', None)
     
+    kwargs = {'data': data}    
+    keys = requestDic.keys() - {'name', 'Open', 'Close', 'High', 
+                           'Low', 'Volume', 'Date', 'Adj Close'}    
     
-    
-    
-
+    for key in keys:
+        kwargs[key] = eval(requestDic.get(key, None))
+        
+    for ind in inspect.getmembers(strategies, inspect.isfunction):
+        if ind[0] == Name:
+            output = ind[1](**kwargs)
+            equity = output['equity']['data']
+            positions = output['positions']['data']
+            ordersData = output['ordersData']['data']
+            result = toolFuncs.StrategyAnalyses(data, equity, positions, ordersData)
+            
+            
+            
+            
+            return JsonResponse(result)        
+        
+        
+        
+        
+        
     

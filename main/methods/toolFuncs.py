@@ -275,7 +275,7 @@ def NextPossibleOrderType(string):
 
 def StrategyGenerator(data, functions):
     close = data['Close']
-    positions, returns = [], []
+    positions, equity = [], []
     orders = []
     asset = {'cash': 10000, 'position': 0, 'total': 10000}
     for i in range(len(close)):
@@ -328,32 +328,34 @@ def StrategyGenerator(data, functions):
             asset['cash'] -= position_variation*order['order_price']
             asset['position'] += position_variation
             
-            record = {'order_price': order['order_price'], 'event_type': order['event_type'],
-                      'order_type': order['order_type'], 'position_variation': position_variation, 'i': i}
-            orders.append(record) # record orders  
+            orders.append({'order_price': order['order_price'],
+                           'event_type': order['event_type'],
+                           'order_type': order['order_type'],
+                           'position_variation': position_variation,
+                           'i': i}) # record orders  
         
-        ordersData = [[orders[k]['i'], round(orders[k]['order_price'], 2),
-                       orders[k]['event_type'], orders[k]['order_type'],
-                       orders[k]['position_variation']] for k in range(len(orders))]
         
         asset['total'] = asset['cash'] + asset['position'] * close[i]
         positions.append(asset['position'])
-        returns.append(asset['total'])
-    return positions, returns, ordersData
+        equity.append(asset['total'])
+    ordersData = [[orders[k]['i'], round(orders[k]['order_price'], 2),
+                   orders[k]['event_type'], orders[k]['order_type'],
+                   orders[k]['position_variation']] for k in range(len(orders))]
+    return positions, equity, ordersData
 
 def GetOutput(data, functions):
-    positions, returns, orders = StrategyGenerator(data, functions)
+    positions, equity, ordersData = StrategyGenerator(data, functions)
     output = {}    
-    output['returns'] = {'name': 'return', 'data': returns, 'position': 'bottom1',
+    output['equity'] = {'name': 'return', 'data': equity, 'position': 'bottom1',
           'type': 'line'}
     #toolFuncs.MaximumDrawdown(asset)   
     output['positions'] = {'name': 'position', 'data': positions, 'position': 'bottom2', 'type': 'bar'}
-    output['orders'] = {'name': 'orders', 'data': orders, 'position': 'main', 'type': 'scatter'}
+    output['ordersData'] = {'name': 'orders', 'data': ordersData, 'position': 'main', 'type': 'scatter'}
     return output
 
 def OrderTypeEntry(func):
     func.order_type = 'entry'
-    return func   
+    return func
 
 def OrderTypeExit(func):
     func.order_type = 'exit'
@@ -363,7 +365,64 @@ def OrderTypeSize(func):
     func.order_type = 'size'
     return func
 
+def StrategyAnalyses(data, equity, positions, ordersData):
+    # start with 10000 equity
+    orders = [dict(zip(['i', 'order_price', 'event_type', 'order_type',
+                        'position_variation'], orderdata)) for orderdata in ordersData]
+    close = data['Close']
+    L = len(close)
+    cashes = [equity[j] - close[j] * positions[j] for j in range(L)]
+    Yrs = L/250
+    
+    
+    
+    # rate of profit 
+    profit= equity[-1]/10000 - 1    
+    # average annual return 
+    average_annual_return = profit/Yrs
+    # benchmark returns
+    benchmark_return = close[-1]/close[0] - 1    
+    # annual benchmark return 
+    annual_benchmark_return = benchmark_return/Yrs
+    # number of trade 
+    num_trades = sum([order['order_type'] == 'exit' for order in orders])
+    # winning trades
+    winning_trades = 0
+    last_entry_equity = -1
+    for order in orders:
+        if order['order_type'] == 'entry':
+            last_entry_equity = cashes[order['i']] + order['order_price'] * positions[order['i']]
+        elif order['order_type'] == 'exit' and cashes[order['i']] + order['order_price'] * positions[order['i']] > last_entry_equity:
+            winning_trades += 1
+    
+    # losing trades    
+    losing_trades = num_trades - winning_trades
 
+
+    # average annual drawdown
+    
+    # maximum drawdown
+    
+    # average profit per trade
+    average_profit_per_trade = profit/num_trades
+    
+    # gain to pain ratio
+    
+    # sharpe ratio
+    
+
+    
+    return {'rate_of_profit': '{0}%'.format(round(100*profit, 2)),
+            'average_annual_return': '{0}%'.format(round(100*average_annual_return, 2)), 
+            'benchmark_return': '{0}%'.format(round(100*benchmark_return, 2)),
+            'annual_benchmark_return': '{0}%'.format(round(100*annual_benchmark_return, 2)),
+            'number_of_trade': num_trades,
+            'winning_trades': winning_trades,
+            'losing_trades': losing_trades,
+            'average_profit_per_trade': '{0}%'.format(round(100*average_profit_per_trade, 2))
+            }
+    
+    
 
 
 

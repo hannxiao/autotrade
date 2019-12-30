@@ -26,9 +26,9 @@ from . import indicators, toolFuncs
 #     return output
 # =============================================================================
 
-def Strategy_AIP(data, K):
+def Strategy_SIP(data, K):
     '''
-    Automatic Investment Plan
+    Systematic Investment Plan
     Invest a certain amount of money every K units of time
     About 10000 cash(initial number) will be invested at the end
     '''
@@ -36,7 +36,7 @@ def Strategy_AIP(data, K):
     single = 10000/(l//K+(l%K>0))
     infoDic1 = {'close': data['Close'], 'single': single}
     @toolFuncs.OrderTypeEntry   
-    def entry(infoDic, asset, orders, i):
+    def Entry(infoDic, asset, orders, i):
         if i == 0:
             return {'amount': infoDic['single'],
                     'amount_type': 'value', 'change_type': 'set',
@@ -44,20 +44,27 @@ def Strategy_AIP(data, K):
             
     infoDic2 = {'close': data['Close'], 'single': single, 'K': K}
     @toolFuncs.OrderTypeSize
-    def size(infoDic, asset, orders, i):
+    def Size(infoDic, asset, orders, i):
         if i != 0 and i % infoDic['K'] == 0:
             return {'amount': infoDic['single'],
                     'amount_type': 'value', 'change_type': 'vary',
-                    'order_price': infoDic['close'][i]}        
-    
-    functions = [(entry, infoDic1), (size, infoDic2)]
+                    'order_price': infoDic['close'][i]}   
+            
+    infoDic_EndExit = {'L': len(data['Close']) - 1, 'close': data['Close']}    
+    @toolFuncs.OrderTypeExit
+    def EndExit(infoDic, asset, orders, i):
+        if i == infoDic['L']:
+            return {'amount': 0,
+                    'amount_type': 'value', 'change_type': 'set',
+                    'order_price': infoDic['close'][i]}
+    functions = [(Entry, infoDic1), (Size, infoDic2), (EndExit, infoDic_EndExit)]
 
     return toolFuncs.GetOutput(data, functions)
 
 
 def Strategy_Turtles(data):
     '''
-    A trading system developed by Richard Dennis
+    A trading system taught by Richard Dennis
     N: exponential average of true range, measures volatility, used to determine trading unit, level of stop price, etc.
     Richard Donchian's Channel breakout system is used here
     Entry when 20 days breakout happens(system1)
@@ -173,8 +180,16 @@ def Strategy_Turtles(data):
                         'order_price': min(target_price, infoDic['open'][i])}                 
         return None    
     
+    infoDic_EndExit = {'L': len(data['Close']) - 1, 'close': data['Close']}    
+    @toolFuncs.OrderTypeExit
+    def EndExit(infoDic, asset, orders, i):
+        if i == infoDic['L']:
+            return {'amount': 0,
+                    'amount_type': 'value', 'change_type': 'set',
+                    'order_price': infoDic['close'][i]}    
     functions = [(entry_func1, infoDic1), (entry_func2, infoDic2),
-                 (stop_func, infoDic3), (exit_func, infoDic4), (size_func, infoDic5)]
+                 (stop_func, infoDic3), (exit_func, infoDic4),
+                 (size_func, infoDic5), (EndExit, infoDic_EndExit)]
     
     return toolFuncs.GetOutput(data, functions)
 

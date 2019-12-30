@@ -14,6 +14,8 @@ urlpatterns = [
     path('methods/get-method-arg', views.GetMethodArg, name='get-method-arg'),
     path('methods/use-method', views.UseMethod, name='use-method'),
     path('develop/', views.Develop, name='develop'),
-    path('develop/get-data', views.GetData, name='get-data')
+    path('develop/get-data', views.GetData, name='get-data'),
+    path('develop/get-method-arg', views.GetMethodArg, name='get-method-arg'),
+    path('develop/analyze-strategy', views.AnalyzeStrategy, name='analyze-strategy')
 
 ]

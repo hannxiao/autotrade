@@ -18,42 +18,66 @@
 </div>
   
 <div id="stocks" class="tabcontent active">
-  <form>
-    {% csrf_token %}
-    {{ developInitialForm }}
-    <br>
-    <div id="symbolInput">
-      <label>Add a symbol:</label>
-      <input type="text" value="goog">
-      <button type="button">Add</button>
+  <div class="lside">
+    <form>
+      {% csrf_token %}
+      {{ developInitialForm }}
+      <br>
+      <div id="symbolInput">
+        <label>Add a symbol:</label>
+        <input type="text" value="goog">
+        <button type="button" id="startAdd">Start to add</button>
+        <button type="button" id="addSymbol">Add</button>
+      </div>
+    </form>
+    <div id="tablecontainer">
+      <table>
+        <tr class="headrow">
+          <th>Symbol</th>
+          <th>Delete</th>        
+        </tr>
+      </table>
     </div>
-  </form>
-  <div id="tablecontainer">
-    <table>
-      <tr class="headrow">
-        <th>Symbol</th>
-        <th>Delete</th>        
-      </tr>
-    </table>
+    <br>
+    <div id="botButtons">
+      <button type="button" id="id_save">Save</button>
+      <button type="button" id="id_toggle">Toggle</button>
+      <button type="button" id="id_reset">Reset</button>
+      <select>Form</select>
+    </div>
   </div>
-  <br>
-  <div id="botButtons">
-    <button type="button" id="id_save">Save</button>
-    <button type="button" id="id_toggle">Toggle</button>
-    <button type="button" id="id_clear">Clear</button>
-    <select>Form</select>
-  
-  
+  <div class="rside">
+    <p>Stock Selector developing ...</p>
   </div>
 </div>
 
 <div id="strategy" class="tabcontent">
- <p>strategy</p>
-
+  <div class="lside">
+    <p>Customized strategies developing</p>
+  </div>
+  <div class="rside">
+    <form id="loadStrategy">
+        {% csrf_token %}
+        {{ selectStrategyForm.as_p }}
+        <div class="button">
+          <button type="button" id="submitSelectStrategy">Select</button>
+        </div>
+    </form>
+    <form id="argInput">
+    </form>
+    <div id="submitPanel">
+      <button type="button" id="startAnalyzing">Create Results</button>
+      <p>Create analytical results for the strategy.</p>
+    </div>
+  </div>
 </div>
 
 <div id="analysis" class="tabcontent">
- <p>analysis</p>
+  <div id="resultTable">
+    <table>
+
+    </table>
+  </div>
 
 </div>
 
@@ -69,7 +93,16 @@ var $symbol = $('#symbolInput input');
 var stockSet = new Set([]);
 var stockData = {};
 
-$('#symbolInput button').on('click', function() {
+
+$('#startAdd').on('click', function() {
+  $(this).css({'display': 'none'});
+  $('#addSymbol').css({'display': 'inline'});
+  $start.attr('disabled', 'disabled');
+  $end.attr('disabled', 'disabled');
+  $interval.attr('disabled', 'disabled');
+})
+
+$('#addSymbol').on('click', function() {
   if (stockSet.has($symbol.val())) {
     alert('That stock has already been collected.');
   } else if ($symbol.val() === '') {
@@ -92,7 +125,7 @@ $('#symbolInput button').on('click', function() {
           $('#tablecontainer table').append(
             $("<tr></tr>").append(
                             $("<td></td>")
-                              .text($symbol.val())
+                              .text($symbol.val().toUpperCase())
                               .addClass("symbolText")
                            )
                           .append(
@@ -124,20 +157,148 @@ function DeleteTr() {
   $tr.remove();
 }
 
-$('#id_clear').on('click', function() {
+$('#id_reset').on('click', function() {
   $('#tablecontainer table tr:not(:first-child)').each(function() {
     $(this).remove();
   })
   stockData = {};
   stockSet = new Set([]);
-
+  $('#addSymbol').css({'display': 'none'});
+  $('#startAdd').css({'display': 'inline'});
+  $start.removeAttr('disabled');
+  $end.removeAttr('disabled');
+  $interval.removeAttr('disabled');
 })
 
+$('#loadStrategy button').on('click', function() {
+  var $inputToUse = $('#loadStrategy select');
+  var $Name = $inputToUse.val();
+  var $Type = $inputToUse.attr('name');
+  var form = {
+    name: $Name,
+    type: $Type, 
+  };
+  $.ajax({
+    type: 'POST',
+    url: 'get-method-arg',
+    data: form,
+    success: function(data){
+      var arg = data.arg;
+          
+      for (i=0, len=arg.length; i<len; i++){
+        $("<p></p>").attr('id', 'p_'+arg[i]).appendTo('#argInput');
+        $("<label><label>")
+          .attr('for', 'input_'+arg[i])
+          .text(arg[i]+':')
+          .css({'text-align': 'right', 'width': '120px', 'display': 'inline-block'})
+          .appendTo('#p_'+arg[i]);
+       
+        $("<input type='text' value='' />")
+          .attr('id', 'input_'+arg[i])
+          .attr('name', arg[i])
+          .css({'position': 'relative', 'left': '30px', 'width': '150px'})
+          .appendTo('#p_'+arg[i]);   
+      };
+        
+      $("<p></p>").attr('id', 'p_button')
+          .appendTo('#argInput')
+          .css({'position': 'relative', 'top': '15px'})
+       
+      $("<button type='button' id='resetRside'>Reset</button>")
+          .appendTo('#p_button')    
+          .css({'position': 'relative', 'left': '15px'});
+        
+      if (data.helpText) {
+        helpText = data.helpText
+        $("<div></div>").attr('id', 'helpText').appendTo('#argInput')
+            .css({'position': 'relative', 'top': '25px'})
+              
+        for (i=0; i<helpText.length; i++) {
+          $("<p></p>").appendTo('#helpText').text(helpText[i])     
+        }     
+      }
+        
+      $('#argInput').slideDown(250);
+      $('#loadStrategy button').hide();
+      $('#submitPanel').show(); 
+      $inputToUse.attr('disabled', 'disabled');
+      $('#resetRside').on('click', resetRside);
+    },
+    failure: function(data){
+      alert('Got an error');
+    }
+  })
+});
 
+function resetRside(){
+  $('#loadStrategy select').removeAttr('disabled');
+  $('#loadStrategy button').show();   
+  $('#argInput')
+    .hide()
+    .empty();
+  $('#submitPanel').hide();
+};
 
+$('#startAnalyzing').on('click', function() {
+  $('.tablink.active').removeClass('active');
+  $('.tablink[rel="analysis"]').addClass('active');
+  $('.tabcontent.active').removeClass('active');
+  $('#analysis').addClass('active');
+  
+  if (stockSet === "undefined") {
+    alert('StockSet not defined. Please add stocks in relevant tab.');
+  } else {
+    var count = 0; //help count the number of ajaxes,
+    // is used to determine which stock the ajax result belongs to 
+    for (var stock in stockData) {
+      if (stockData.hasOwnProperty(stock)) {
+        var form = $.extend(true, {}, stockData[stock]);
+                
+        var $Name = $('#loadStrategy select').val();
+        form['name'] = $Name;
+        $('#argInput input').each(function() {
+          form[$(this).attr('name')] = $(this).val();
+        })
+      
+        $.ajax({
+          type: 'POST',
+          url: 'analyze-strategy',
+          data: JSON.stringify(form),
+          contentType: "application/json; charset=UTF-8",
+      
+          success: function(data) {
+            if ($('#resultTable table tr').length === 0) {
+              $curTr = $("<tr></tr>").appendTo('#resultTable table');
+              $("<th></th>").text('Name')
+                            .appendTo($curTr);
+              for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                  $("<th></th>").text(key)
+                                .appendTo($curTr);
+                }
+              }
+            }
+            $curTr = $("<tr></tr>").appendTo('#resultTable table');
+                        
+            $("<td></td>").text(Object.keys(stockData)[count])
+                          .appendTo($curTr);
+            count += 1;
+            
+            for (var key in data) {
+              if (data.hasOwnProperty(key)) {
+                $("<td></td>").text(data[key])
+                              .appendTo($curTr);
+              }
+            }            
+          },
+          failure: function(data) {
+            alert('Got an error');
+          },
+      })
+      }
+    }}
 
-
-
+})
 
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {

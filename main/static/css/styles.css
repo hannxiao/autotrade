@@ -70,7 +70,7 @@ position: absolute;
 }
 
 .methods #lside form {
-font-size: 14px
+  font-size: 14px
 }
 
 .methods #lside form label {
@@ -143,10 +143,11 @@ font-size: 14px
 .methods #rside .panel {
   display: none;
   background: #c9c9c9;
-  padding: 30px ;
+  padding: 30px;
   border-radius: 0 10px 0 0;
   border-style: solid;
   border-width: 1px;
+  height: 20%;
 }
 
 .methods #rside .panel.active {
@@ -160,6 +161,8 @@ font-size: 14px
   border-radius: 0 0 10px 10px;
   border-style: solid;
   border-width: 1px;
+  height: 75%;
+  overflow: auto;
 }
 
 /* For develop.html:*/
@@ -181,7 +184,7 @@ font-size: 14px
   display: block;
   background-color: inherit;
   color: black;
-  padding: 22px 16px;
+  padding: 30px 16px;
   width: 100%;
   border: none;
   outline: 1px solid #ccc;
@@ -210,10 +213,26 @@ font-size: 14px
   display: block;
 }
 
+.develop .lside {
+    position: absolute;
+    top: 0;
+    right: 40%;
+    bottom: 0;
+    left: 10%;
+}
+
+.develop .rside {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 60%;
+}
+
 .develop #stocks form {
   float: left;
-  width: 55%;
-  height: 15%;
+  width: 100%;
+  height: 17%;
   padding: 20px 30px 0 30px;
 }
 
@@ -229,19 +248,19 @@ font-size: 14px
   margin-right: 40px;
 }
 
+.develop #addSymbol {
+  display: none;
+}
+
 .develop #tablecontainer {  
-  margin-left: 80px;
-  margin-top: 0px;
-  height: 70%;  
-  width: 50%;
+  margin: 0 30px 0 80px;
+  height: 72%;  
   overflow: auto;
   border: 2px solid #000;
 }
 
 .develop #tablecontainer table {
   width: 100%;
-
-
 }
 
 .develop #tablecontainer th, .develop #tablecontainer td {
@@ -261,3 +280,55 @@ font-size: 14px
   margin-left: 50px;
 }
 
+.develop #loadStrategy {  
+  background: #c9c9c9;
+  padding: 40px ;
+  width: 100%;
+  height: 20%;
+  border: solid 1px;
+}
+
+.develop #argInput {
+  display: none;
+  background: #c9c9c9;
+  padding: 30px ;
+  border-radius: 0 0 10px 10px;
+  border-style: solid;
+  border-width: 1px;
+  height: 55%;
+  overflow: auto;
+}
+
+.develop #submitPanel {
+  display: none;
+  padding: 40px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 25%;
+}
+
+.develop #startAnalyzing {
+  margin: auto;
+  padding: 15px 20px;
+}
+
+.develop #resultTable {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  border: 2px solid #000;
+}
+
+.develop #resultTable table {
+  width: 100%;
+}
+
+.develop #resultTable th, .develop #resultTable td {
+  text-align: left;
+  padding: 16px;
+}
+
+.develop #resultTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

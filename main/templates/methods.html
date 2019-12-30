@@ -42,7 +42,6 @@
     <li rel="analysisPanel">analyses</li>
   </ul>
   
-  
   <form id="indicatorPanel" class="panel active">
       {% csrf_token %}
       {{ selectIndicatorForm.as_p }}
@@ -372,7 +371,6 @@ option = {
       contentType: "application/json; charset=UTF-8",
       
       success: function(data){
-        test = data
         delExtraChart()
 
         for (key in data) {
@@ -394,6 +392,8 @@ option = {
           option.yAxis[3].min = function(value) {
             return -1.2 * Math.max(value.max, -value.min).toFixed(1)
           };
+          option.xAxis[1].axisLine.onZeroAxisIndex = 3;
+          
           // set option series for strategy figures
           var i = 0;
           while (i < option.series.length){
