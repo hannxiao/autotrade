@@ -240,11 +240,6 @@ function resetRside(){
 };
 
 $('#startAnalyzing').on('click', function() {
-  $('.tablink.active').removeClass('active');
-  $('.tablink[rel="analysis"]').addClass('active');
-  $('.tabcontent.active').removeClass('active');
-  $('#analysis').addClass('active');
-  $('#resultTable table').empty();
   if (stockSet.size === 0) {
     alert('StockSet not created. Please collect stocks at relevant tab.');
   } else if ($('#argInput input').length > 0 && $('#argInput input').is(function() {
@@ -253,6 +248,12 @@ $('#startAnalyzing').on('click', function() {
   ) {
     alert('Please enter arguments needed for the strategy.');
   } else {
+    $('.tablink.active').removeClass('active');
+    $('.tablink[rel="analysis"]').addClass('active');
+    $('.tabcontent.active').removeClass('active');
+    $('#analysis').addClass('active');
+    $('#resultTable table').empty();
+    
     var count = 0; //help count the number of ajaxes,
     // is used to determine which stock the ajax result belongs to 
     for (var stock in stockData) {
