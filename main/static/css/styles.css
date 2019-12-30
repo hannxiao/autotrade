@@ -50,6 +50,11 @@ margin: 0
   z-index: -2;
 }
 
+/* For index.html: */
+.index p, .index h1 {
+  padding: 10px 20px;
+}
+
 /* For methods.html: */
 
 .methods {
