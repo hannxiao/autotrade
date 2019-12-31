@@ -138,10 +138,9 @@ def AnalyzeStrategy(request):
     data['Low'] = requestDic.get('Low', None)  
     data['Volume'] = requestDic.get('Volume', None)  
     data['Date'] = requestDic.get('Date', None)
-    data['Interval'] = requestDic.get('interval', None)
     
     kwargs = {'data': data}    
-    keys = requestDic.keys() - {'name', 'interval', 'Open', 'Close', 'High', 
+    keys = requestDic.keys() - {'name', 'interval', 'symbol', 'Open', 'Close', 'High', 
                            'Low', 'Volume', 'Date', 'Adj Close'}    
     
     for key in keys:
@@ -150,13 +149,15 @@ def AnalyzeStrategy(request):
     for ind in inspect.getmembers(strategies, inspect.isfunction):
         if ind[0] == Name:
             output = ind[1](**kwargs)
+            
             equity = output['equity']['data']
             positions = output['positions']['data']
             ordersData = output['ordersData']['data']
+            
+            data['Interval'] = requestDic.get('interval', None)
+            data['Symbol'] = requestDic.get('symbol', None)            
             result = toolFuncs.StrategyAnalyses(data, equity, positions, ordersData)
-            return JsonResponse(result)        
-        
-        
+            return JsonResponse(result)
         
         
         

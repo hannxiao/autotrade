@@ -253,9 +253,7 @@ $('#startAnalyzing').on('click', function() {
     $('.tabcontent.active').removeClass('active');
     $('#analysis').addClass('active');
     $('#resultTable table').empty();
-    
-    var count = 0; //help count the number of ajaxes,
-    // is used to determine which stock the ajax result belongs to 
+     
     for (var stock in stockData) {
       if (stockData.hasOwnProperty(stock)) {
         var form = $.extend(true, {}, stockData[stock]);
@@ -263,6 +261,8 @@ $('#startAnalyzing').on('click', function() {
         var $Name = $('#loadStrategy select').val();
         form['name'] = $Name;
         form['interval'] = $interval.val();
+        form['symbol'] = stock;
+        
         $('#argInput input').each(function() {
           form[$(this).attr('name')] = $(this).val();
         })
@@ -276,8 +276,6 @@ $('#startAnalyzing').on('click', function() {
           success: function(data) {
             if ($('#resultTable table tr').length === 0) {
               $curTr = $("<tr></tr>").appendTo('#resultTable table');
-              $("<th></th>").text('Name')
-                            .appendTo($curTr);
               for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                   $("<th></th>").text(key)
@@ -286,11 +284,7 @@ $('#startAnalyzing').on('click', function() {
               }
             }
             $curTr = $("<tr></tr>").appendTo('#resultTable table');
-                        
-            $("<td></td>").text(Object.keys(stockData)[count])
-                          .appendTo($curTr);
-            count += 1;
-            
+
             for (var key in data) {
               if (data.hasOwnProperty(key)) {
                 $("<td></td>").text(data[key])
@@ -301,9 +295,11 @@ $('#startAnalyzing').on('click', function() {
           failure: function(data) {
             alert('Got an error');
           },
-      })
+        })
+
       }
-    }}
+    }
+    }
 
 })
 

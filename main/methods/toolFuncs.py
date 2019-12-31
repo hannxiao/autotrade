@@ -411,7 +411,7 @@ def StrategyAnalyses(data, equity, positions, ordersData):
     # sharpe ratio
     
     result = {}
-        
+    result['Name'] = data['Symbol']
     result['rate_of_profit'] = '{0}%'.format(round(100*profit, 2))
     result['time_length'] = L
     if data['Interval'] == '1d':
