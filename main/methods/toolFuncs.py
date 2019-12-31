@@ -337,7 +337,7 @@ def StrategyGenerator(data, functions):
         
         asset['total'] = asset['cash'] + asset['position'] * close[i]
         positions.append(asset['position'])
-        equity.append(asset['total'])
+        equity.append(round(asset['total'], 2))
     ordersData = [[orders[k]['i'], round(orders[k]['order_price'], 2),
                    orders[k]['event_type'], orders[k]['order_type'],
                    orders[k]['position_variation']] for k in range(len(orders))]
@@ -346,11 +346,11 @@ def StrategyGenerator(data, functions):
 def GetOutput(data, functions):
     positions, equity, ordersData = StrategyGenerator(data, functions)
     output = {}    
-    output['equity'] = {'name': 'return', 'data': equity, 'position': 'bottom1',
+    output['equity'] = {'name': 'equity', 'data': equity, 'position': 'bottom1',
           'type': 'line'}
     #toolFuncs.MaximumDrawdown(asset)   
     output['positions'] = {'name': 'position', 'data': positions, 'position': 'bottom2', 'type': 'bar'}
-    output['ordersData'] = {'name': 'orders', 'data': ordersData, 'position': 'main', 'type': 'scatter'}
+    output['ordersData'] = {'name': 'order', 'data': ordersData, 'position': 'main', 'type': 'scatter'}
     return output
 
 def OrderTypeEntry(func):
@@ -372,20 +372,37 @@ def StrategyAnalyses(data, equity, positions, ordersData):
     close = data['Close']
     L = len(close)
     cashes = [equity[j] - close[j] * positions[j] for j in range(L)]
-    Yrs = L/250
+    Yrs = L/250 # valid when interval == '1d'
     
-    
+    result = {}
+    # name of stock
+    result['Name'] = data['Symbol']    
     
     # rate of profit 
-    profit= equity[-1]/10000 - 1    
-    # average annual return 
-    average_annual_return = profit/Yrs
+    profit= equity[-1]/10000 - 1
+    result['rate_of_profit'] = '{0}%'.format(round(100*profit, 2))
+    
+    # time length
+    result['time_length'] = L
+    
+    # average annual return
+    if data['Interval'] == '1d':    
+        average_annual_return = profit/Yrs
+        result['average_annual_return'] = '{0}%'.format(round(100*average_annual_return, 2))
+    
     # benchmark returns
-    benchmark_return = close[-1]/close[0] - 1    
-    # annual benchmark return 
-    annual_benchmark_return = benchmark_return/Yrs
+    benchmark_return = close[-1]/close[0] - 1
+    result['benchmark_return'] = '{0}%'.format(round(100*benchmark_return, 2))
+    
+    # annual benchmark return
+    if data['Interval'] == '1d':        
+        annual_benchmark_return = benchmark_return/Yrs
+        result['annual_benchmark_return'] = '{0}%'.format(round(100*annual_benchmark_return, 2))
+        
     # number of trade 
     num_trades = sum([order['order_type'] == 'exit' for order in orders])
+    result['number_of_trade'] = num_trades
+
     # winning trades
     winning_trades = 0
     last_entry_equity = -1
@@ -394,9 +411,11 @@ def StrategyAnalyses(data, equity, positions, ordersData):
             last_entry_equity = cashes[order['i']] + order['order_price'] * positions[order['i']]
         elif order['order_type'] == 'exit' and cashes[order['i']] + order['order_price'] * positions[order['i']] > last_entry_equity:
             winning_trades += 1
+    result['winning_trades'] = winning_trades
     
     # losing trades    
     losing_trades = num_trades - winning_trades
+    result['losing_trades'] = losing_trades
 
 
     # average annual drawdown
@@ -404,25 +423,17 @@ def StrategyAnalyses(data, equity, positions, ordersData):
     # maximum drawdown
     
     # average profit per trade
-    average_profit_per_trade = profit/num_trades
-    
+    if num_trades != 0:    
+        average_profit_per_trade = profit/num_trades 
+        result['average_profit_per_trade'] = '{0}%'.format(round(100*average_profit_per_trade, 2))
+    else:
+        result['average_profit_per_trade'] = 'None' 
+        # default value is needed when difference may happen between stocks
+        
     # gain to pain ratio
     
     # sharpe ratio
     
-    result = {}
-    result['Name'] = data['Symbol']
-    result['rate_of_profit'] = '{0}%'.format(round(100*profit, 2))
-    result['time_length'] = L
-    if data['Interval'] == '1d':
-        result['average_annual_return'] = '{0}%'.format(round(100*average_annual_return, 2))
-    result['benchmark_return'] = '{0}%'.format(round(100*benchmark_return, 2))
-    if data['Interval'] == '1d':
-        result['annual_benchmark_return'] = '{0}%'.format(round(100*annual_benchmark_return, 2))
-    result['number_of_trade'] = num_trades
-    result['winning_trades'] = winning_trades
-    result['losing_trades'] = losing_trades
-    result['average_profit_per_trade'] = '{0}%'.format(round(100*average_profit_per_trade, 2))
     return result
     
     
