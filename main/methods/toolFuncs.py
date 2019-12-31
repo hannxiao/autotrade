@@ -410,17 +410,20 @@ def StrategyAnalyses(data, equity, positions, ordersData):
     
     # sharpe ratio
     
-
-    
-    return {'rate_of_profit': '{0}%'.format(round(100*profit, 2)),
-            'average_annual_return': '{0}%'.format(round(100*average_annual_return, 2)), 
-            'benchmark_return': '{0}%'.format(round(100*benchmark_return, 2)),
-            'annual_benchmark_return': '{0}%'.format(round(100*annual_benchmark_return, 2)),
-            'number_of_trade': num_trades,
-            'winning_trades': winning_trades,
-            'losing_trades': losing_trades,
-            'average_profit_per_trade': '{0}%'.format(round(100*average_profit_per_trade, 2))
-            }
+    result = {}
+        
+    result['rate_of_profit'] = '{0}%'.format(round(100*profit, 2))
+    result['time_length'] = L
+    if data['Interval'] == '1d':
+        result['average_annual_return'] = '{0}%'.format(round(100*average_annual_return, 2))
+    result['benchmark_return'] = '{0}%'.format(round(100*benchmark_return, 2))
+    if data['Interval'] == '1d':
+        result['annual_benchmark_return'] = '{0}%'.format(round(100*annual_benchmark_return, 2))
+    result['number_of_trade'] = num_trades
+    result['winning_trades'] = winning_trades
+    result['losing_trades'] = losing_trades
+    result['average_profit_per_trade'] = '{0}%'.format(round(100*average_profit_per_trade, 2))
+    return result
     
     
 

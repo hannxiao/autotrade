@@ -120,14 +120,14 @@ $('#addSymbol').on('click', function() {
       data: form,
       success: function(data){
         if (data.Close.length > 0) {
-          stockData[$symbol.val()] = data;            
-          stockSet.add($symbol.val());  
+          stockData[$symbol.val().toUpperCase()] = data;            
+          stockSet.add($symbol.val().toUpperCase());  
           $('#tablecontainer table').append(
             $("<tr></tr>").append(
                             $("<td></td>")
                               .text($symbol.val().toUpperCase())
                               .addClass("symbolText")
-                           )
+                            )
                           .append(
                             $("<td></td>").append(
                               $("<button></button>")
@@ -142,7 +142,7 @@ $('#addSymbol').on('click', function() {
       $symbol.val('');
       $symbol.focus();
       },
-      failure: function(data){
+      failure: function(data) {
         alert('Got an error');
       }
     } )
@@ -262,6 +262,7 @@ $('#startAnalyzing').on('click', function() {
                 
         var $Name = $('#loadStrategy select').val();
         form['name'] = $Name;
+        form['interval'] = $interval.val();
         $('#argInput input').each(function() {
           form[$(this).attr('name')] = $(this).val();
         })
