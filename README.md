@@ -1,2 +1,2 @@
 # autotrade
-A web application containing stock market analysis and strategy development
+A web application(django) containing stock market analysis and strategy development
