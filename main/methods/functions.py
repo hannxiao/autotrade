@@ -18,12 +18,12 @@ class Generic(metaclass=ABCMeta):
             pro = ts.pro_api()
             df = pro.daily(ts_code=symbol, start_date=start.replace('-', ''),
                                            end_date=end.replace('-', ''))
-            df.drop(columns=['ts_code', 'pre_close', 'change', 'pct_chg'], inplace=True)
-            df['trade_date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
-            df.set_index('trade_date', inplace=True)
+            df['Date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
+            df.drop(columns=['ts_code', 'pre_close', 'change', 'pct_chg', 'trade_date'], inplace=True)
+            df.set_index('Date', inplace=True)
             df.rename(columns={"open": "Open", "high": "High", "low": "Low",
                                "close": "Close", "vol": "Volume", "amount": "Amount"}, inplace=True)
-            self._data = df
+            self._data = df.iloc[::-1]
         elif interval in ['1d', '5d', '1wk', '1mo', '3mo']: # US stock market
             self._data = yf.download(symbol, start=start, end=end, interval=interval)
         else:

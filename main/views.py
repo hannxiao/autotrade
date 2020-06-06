@@ -72,7 +72,7 @@ def GetData(request):
     new_data = dict(data.reset_index())
     for ele in new_data:
        new_data[ele] = list(new_data[ele]) 
-    return JsonResponse([symbol, start, end, interval])
+    return JsonResponse(new_data)
     
 def GetMethodArg(request):
     Name = request.POST.get('name', None)
@@ -118,7 +118,7 @@ def UseMethod(request):
 
     kwargs = {'data': data}    
     keys = requestDic.keys() - {'name', 'type', 'Open', 'Close', 'High', 
-                           'Low', 'Volume', 'Date', 'Adj Close'}
+                           'Low', 'Volume', 'Date', 'Adj Close', 'Amount'}
     for key in keys:
         kwargs[key] = eval(requestDic.get(key, None))
                 
@@ -141,7 +141,7 @@ def AnalyzeStrategy(request):
     
     kwargs = {'data': data}    
     keys = requestDic.keys() - {'name', 'interval', 'symbol', 'Open', 'Close', 'High', 
-                           'Low', 'Volume', 'Date', 'Adj Close'}    
+                           'Low', 'Volume', 'Date', 'Adj Close', 'Amount'}    
     
     for key in keys:
         kwargs[key] = eval(requestDic.get(key, None))
