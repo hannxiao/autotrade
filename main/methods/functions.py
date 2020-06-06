@@ -7,14 +7,24 @@ import datetime
 import pandas as pd
 import numpy as np
 from mpl_finance import candlestick_ohlc
+import tushare as ts
 
 from . import indicators, strategies 
 
     
 class Generic(metaclass=ABCMeta):
-    
     def __init__(self, symbol, start, end, interval='1d'):
-        if interval in ['1d', '5d', '1wk', '1mo', '3mo']:
+        if symbol[0].isdigit(): # China market, default interval=1d
+            pro = ts.pro_api()
+            df = pro.daily(ts_code=symbol, start_date=start.replace('-', ''),
+                                           end_date=end.replace('-', ''))
+            df.drop(columns=['ts_code', 'pre_close', 'change', 'pct_chg'], inplace=True)
+            df['trade_date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
+            df.set_index('trade_date', inplace=True)
+            df.rename(columns={"open": "Open", "high": "High", "low": "Low",
+                               "close": "Close", "vol": "Volume", "amount": "Amount"}, inplace=True)
+            self._data = df
+        elif interval in ['1d', '5d', '1wk', '1mo', '3mo']: # US stock market
             self._data = yf.download(symbol, start=start, end=end, interval=interval)
         else:
             if interval in ['60m', '1h']:
