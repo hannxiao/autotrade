@@ -67,9 +67,7 @@ def GetData(request):
     end = request.POST.get('end', None)    
     interval = request.POST.get('interval', None)
        
-    stock = functions.Generic(symbol, start, end, interval)._test
-    return JsonResponse({'symbol':stock})
-
+    stock = functions.Generic(symbol, start, end, interval)
     data = stock._data 
     new_data = dict(data.reset_index())
     for ele in new_data:
