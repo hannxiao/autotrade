@@ -13,10 +13,10 @@ from . import indicators, strategies
 
     
 class Generic(metaclass=ABCMeta):
-    def __init__(self, symbol, start, end, interval='1d'):
-        if symbol[1].isdigit(): # China market, default interval=1d
+    def __init__(self, symbols, start, end, interval='1d'):
+        if symbols[1].isdigit(): # China market, default interval=1d
             pro = ts.pro_api()
-            df = pro.daily(ts_code=symbol, start_date=start.replace('-', ''),
+            df = pro.daily(ts_code=symbols, start_date=start.replace('-', ''),
                                            end_date=end.replace('-', ''))
             df['Date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
             df.drop(columns=['ts_code', 'pre_close', 'change', 'pct_chg', 'trade_date'], inplace=True)
@@ -25,7 +25,7 @@ class Generic(metaclass=ABCMeta):
                                "close": "Close", "vol": "Volume", "amount": "Amount"}, inplace=True)
             self._data = df.iloc[::-1]
         elif interval in ['1d', '5d', '1wk', '1mo', '3mo']: # US stock market
-            self._data = yf.download(symbol, start=start, end=end, interval=interval)
+            self._data = yf.download(symbols, start=start, end=end, interval=interval)
         else:
             if interval in ['60m', '1h']:
                 data_range = 730
@@ -51,7 +51,7 @@ class Generic(metaclass=ABCMeta):
                     i_start = adjusted_start_num
                     temp_data = pd.DataFrame()
                     while i_start < end_num:
-                        to_append = yf.download(symbol, 
+                        to_append = yf.download(symbols, 
                                                 start=mdates.DateFormatter('%Y-%m-%d')(i_start), 
                                                 end=mdates.DateFormatter('%Y-%m-%d')(i_start+7), 
                                                 interval=interval)
@@ -59,11 +59,11 @@ class Generic(metaclass=ABCMeta):
                         i_start+=6
                     self._data = temp_data
                 else:
-                    self._data = yf.download(symbol, start=adjusted_start, end=end, interval=interval)
+                    self._data = yf.download(symbols, start=adjusted_start, end=end, interval=interval)
                 if start_num < available_after:
                     print('start date out of range, all available data fetched')     
                     
-        self.symbol = symbol
+        self.symbols = symbols
         self.interval = interval
         self.period = 'from '+start+' to '+end
         self.close = self._data.Close.reset_index(drop=True)
