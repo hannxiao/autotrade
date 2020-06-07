@@ -14,7 +14,7 @@ from . import indicators, strategies
     
 class Generic(metaclass=ABCMeta):
     def __init__(self, symbol, start, end, interval='1d'):
-        if symbol[0].isdigit(): # China market, default interval=1d
+        if symbol and symbol[0].isdigit(): # China market, default interval=1d
             pro = ts.pro_api()
             df = pro.daily(ts_code=symbol, start_date=start.replace('-', ''),
                                            end_date=end.replace('-', ''))
