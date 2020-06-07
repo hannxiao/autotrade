@@ -67,15 +67,12 @@ def GetData(request):
     end = request.POST.get('end', None)    
     interval = request.POST.get('interval', None)
        
-    try:
-        stock = functions.Generic(symbol, start, end, interval)
-        data = stock._data 
-        new_data = dict(data.reset_index())
-        for ele in new_data:
-           new_data[ele] = list(new_data[ele]) 
-        return JsonResponse(new_data)
-    except:
-        return JsonResponse({'symbol':symbol})
+    stock = functions.Generic(symbol, start, end, interval)
+    data = stock._data 
+    new_data = dict(data.reset_index())
+    for ele in new_data:
+       new_data[ele] = list(new_data[ele]) 
+    return JsonResponse(new_data)
     
 def GetMethodArg(request):
     Name = request.POST.get('name', None)
