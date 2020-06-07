@@ -72,7 +72,10 @@ def GetData(request):
     new_data = dict(data.reset_index())
     for ele in new_data:
        new_data[ele] = list(new_data[ele]) 
-    return JsonResponse(new_data)
+    if symbol:
+        return JsonResponse(new_data)
+    else:
+        return None
     
 def GetMethodArg(request):
     Name = request.POST.get('name', None)
