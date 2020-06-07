@@ -62,16 +62,19 @@ def Method(request):
     
    
 def GetData(request):
-    symbol = request.POST.get('symbol', None)    
-    start = request.POST.get('start', None) 
-    end = request.POST.get('end', '8')    
-    interval = request.POST.get('interval', None) 
+    requestDic = json.loads(request.body)
+    symbol = requestDic.get('symbol', None)    
+    start = requestDic.get('start', None) 
+    end = requestDic.get('end', None)    
+    interval = requestDic.get('interval', None) 
     
-    if symbol and start and end and interval:
-        stock = functions.Generic(symbol, start, end, interval)
-        return JsonResponse({'symbol':stock.symbol})
-    else:
-        return JsonResponse({'symbol':symbol, 'start':start, 'end':end, 'interval':interval})
+# =============================================================================
+#     if symbol and start and end and interval:
+#         stock = functions.Generic(symbol, start, end, interval)
+#         return JsonResponse({'symbol':stock.symbol})
+#     else:
+#         return JsonResponse({'symbol':symbol, 'start':start, 'end':end, 'interval':interval})
+# =============================================================================
 
     stock = functions.Generic(symbol, start, end, interval)    
     data = stock._data 
