@@ -247,7 +247,8 @@ option = {
     $.ajax({
       type: 'POST',
       url: 'get-data',
-      data: form,
+      data: JSON.stringify(form),
+      contentType: "application/json; charset=UTF-8",
       success: function(data){
         rawData = data;
         setFunc(rawData);
