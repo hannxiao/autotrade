@@ -72,6 +72,7 @@ class Generic(metaclass=ABCMeta):
         self.low = self._data.Low.reset_index(drop=True)
         self.volume = self._data.Volume.reset_index(drop=True)
 
+
     def figure_framework(self, n):
         # set a figure framework which has basic setting, used to make time-series plot
         # n is the number of subplots, taking values from 1 to 3
