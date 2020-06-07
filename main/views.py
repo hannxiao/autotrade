@@ -64,7 +64,7 @@ def Method(request):
 def GetData(request):
     symbol = request.POST.get('symbol', None)    
     start = request.POST.get('start', None) 
-    end = request.POST.get('end', None)    
+    end = request.POST.get('end', '8')    
     interval = request.POST.get('interval', None) 
     
     if symbol and start and end and interval:
