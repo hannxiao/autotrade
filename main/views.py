@@ -62,11 +62,10 @@ def Method(request):
     
    
 def GetData(request):
-    requestDic = json.loads(request.body)
-    symbol = requestDic.get('symbol', None)    
-    start = requestDic.get('start', None) 
-    end = requestDic.get('end', None)    
-    interval = requestDic.get('interval', None) 
+    symbol = request.POST.get('symbol', None)    
+    start = request.POST.get('start', None) 
+    end = request.POST.get('end', None)    
+    interval = request.POST.get('interval', None) 
     
 # =============================================================================
 #     if symbol and start and end and interval:
