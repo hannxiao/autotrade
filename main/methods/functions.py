@@ -14,67 +14,67 @@ from . import indicators, strategies
     
 class Generic(metaclass=ABCMeta):
     def __init__(self, symbol, start, end, interval='1d'):
-        try:
-            return str(type(symbol))
-        except:
-            return '0'
-        if symbol and symbol[0].isdigit(): # China market, default interval=1d
-            pro = ts.pro_api()
-            df = pro.daily(ts_code=symbol, start_date=start.replace('-', ''),
-                                           end_date=end.replace('-', ''))
-            df['Date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
-            df.drop(columns=['ts_code', 'pre_close', 'change', 'pct_chg', 'trade_date'], inplace=True)
-            df.set_index('Date', inplace=True)
-            df.rename(columns={"open": "Open", "high": "High", "low": "Low",
-                               "close": "Close", "vol": "Volume", "amount": "Amount"}, inplace=True)
-            self._data = df.iloc[::-1]
-        elif interval in ['1d', '5d', '1wk', '1mo', '3mo']: # US stock market
-            self._data = yf.download(symbol, start=start, end=end, interval=interval)
-        else:
-            if interval in ['60m', '1h']:
-                data_range = 730
-            elif interval in ['2m', '5m', '15m', '30m', '90m']:    
-                data_range = 60
-            else:
-                data_range = 30
-                
-            today = mdates.date2num(datetime.date.today())
-            available_after = today-data_range+1 # foremost available start date number
-            end_num = mdates.date2num(datetime.datetime.strptime(end, '%Y-%m-%d'))
-            start_num = mdates.date2num(datetime.datetime.strptime(start, '%Y-%m-%d'))
-            
-            if end_num < available_after+2:
-                raise Exception('period out of range, no data fetched')
-            elif end_num < start_num+2:
-                raise Exception('period length < 1, no data fetched')
-            else:
-                adjusted_start_num = max(available_after,start_num) 
-                adjusted_start = mdates.DateFormatter('%Y-%m-%d')(adjusted_start_num)
-                
-                if interval == '1m' and end_num-adjusted_start_num>7:
-                    i_start = adjusted_start_num
-                    temp_data = pd.DataFrame()
-                    while i_start < end_num:
-                        to_append = yf.download(symbol, 
-                                                start=mdates.DateFormatter('%Y-%m-%d')(i_start), 
-                                                end=mdates.DateFormatter('%Y-%m-%d')(i_start+7), 
-                                                interval=interval)
-                        temp_data = temp_data.append(to_append)
-                        i_start+=6
-                    self._data = temp_data
-                else:
-                    self._data = yf.download(symbol, start=adjusted_start, end=end, interval=interval)
-                if start_num < available_after:
-                    print('start date out of range, all available data fetched')     
-                    
-        self.symbol = symbol
-        self.interval = interval
-        self.period = 'from '+start+' to '+end
-        self.close = self._data.Close.reset_index(drop=True)
-        self.open = self._data.Open.reset_index(drop=True)
-        self.high = self._data.High.reset_index(drop=True)
-        self.low = self._data.Low.reset_index(drop=True)
-        self.volume = self._data.Volume.reset_index(drop=True)
+        self._test = str(type(symbol))
+# =============================================================================
+# 
+#         if symbol and symbol[0].isdigit(): # China market, default interval=1d
+#             pro = ts.pro_api()
+#             df = pro.daily(ts_code=symbol, start_date=start.replace('-', ''),
+#                                            end_date=end.replace('-', ''))
+#             df['Date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
+#             df.drop(columns=['ts_code', 'pre_close', 'change', 'pct_chg', 'trade_date'], inplace=True)
+#             df.set_index('Date', inplace=True)
+#             df.rename(columns={"open": "Open", "high": "High", "low": "Low",
+#                                "close": "Close", "vol": "Volume", "amount": "Amount"}, inplace=True)
+#             self._data = df.iloc[::-1]
+#         elif interval in ['1d', '5d', '1wk', '1mo', '3mo']: # US stock market
+#             self._data = yf.download(symbol, start=start, end=end, interval=interval)
+#         else:
+#             if interval in ['60m', '1h']:
+#                 data_range = 730
+#             elif interval in ['2m', '5m', '15m', '30m', '90m']:    
+#                 data_range = 60
+#             else:
+#                 data_range = 30
+#                 
+#             today = mdates.date2num(datetime.date.today())
+#             available_after = today-data_range+1 # foremost available start date number
+#             end_num = mdates.date2num(datetime.datetime.strptime(end, '%Y-%m-%d'))
+#             start_num = mdates.date2num(datetime.datetime.strptime(start, '%Y-%m-%d'))
+#             
+#             if end_num < available_after+2:
+#                 raise Exception('period out of range, no data fetched')
+#             elif end_num < start_num+2:
+#                 raise Exception('period length < 1, no data fetched')
+#             else:
+#                 adjusted_start_num = max(available_after,start_num) 
+#                 adjusted_start = mdates.DateFormatter('%Y-%m-%d')(adjusted_start_num)
+#                 
+#                 if interval == '1m' and end_num-adjusted_start_num>7:
+#                     i_start = adjusted_start_num
+#                     temp_data = pd.DataFrame()
+#                     while i_start < end_num:
+#                         to_append = yf.download(symbol, 
+#                                                 start=mdates.DateFormatter('%Y-%m-%d')(i_start), 
+#                                                 end=mdates.DateFormatter('%Y-%m-%d')(i_start+7), 
+#                                                 interval=interval)
+#                         temp_data = temp_data.append(to_append)
+#                         i_start+=6
+#                     self._data = temp_data
+#                 else:
+#                     self._data = yf.download(symbol, start=adjusted_start, end=end, interval=interval)
+#                 if start_num < available_after:
+#                     print('start date out of range, all available data fetched')     
+#                     
+#         self.symbol = symbol
+#         self.interval = interval
+#         self.period = 'from '+start+' to '+end
+#         self.close = self._data.Close.reset_index(drop=True)
+#         self.open = self._data.Open.reset_index(drop=True)
+#         self.high = self._data.High.reset_index(drop=True)
+#         self.low = self._data.Low.reset_index(drop=True)
+#         self.volume = self._data.Volume.reset_index(drop=True)
+# =============================================================================
 
     def figure_framework(self, n):
         # set a figure framework which has basic setting, used to make time-series plot
