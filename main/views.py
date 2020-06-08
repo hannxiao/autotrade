@@ -62,11 +62,11 @@ def Method(request):
     
    
 def GetData(request):
-    symbol = request.POST.get('symbol', None)    
-    start = request.POST.get('start', None) 
-    end = request.POST.get('end', None)    
-    interval = request.POST.get('interval', None) 
-    
+    symbol = request.POST.get('symbol')    
+    start = request.POST.get('start')
+    end = request.POST.get('end')
+    interval = request.POST.get('interval')
+
 # =============================================================================
 #     if symbol and start and end and interval:
 #         stock = functions.Generic(symbol, start, end, interval)
