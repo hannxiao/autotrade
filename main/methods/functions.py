@@ -15,7 +15,7 @@ from . import indicators, strategies
 class Generic(metaclass=ABCMeta):
     def __init__(self, symbols, start, end, interval='1d'):
         if True: #any([char.isdigit() for char in symbols]): # China market, default interval=1d
-            pro = ts.pro_api()
+            pro = ts.pro_api('f0d1eed02c3e4f3c93daf43e863c886413175340ec523d721d172ceb') # my tushare token
             df = pro.daily(ts_code=symbols, start_date=start.replace('-', ''),
                                            end_date=end.replace('-', ''))
             df['Date'] = df['trade_date'].apply(lambda s: datetime.datetime.strptime(s, "%Y%m%d"))
